@@ -1,0 +1,25 @@
+SCHEDULING
+Scheduling.c har en global timer som brukes til å sammenligne tiden alt tar. Timer funksjonen øker
+global time ved hjelp av "timeUnitsUs" i mikrosekunder og sender et signal til alle andre tråder som venter på oppdatering. 
+
+Om en task er i staten "running" vil den oppdatere "currentRuntime". Denne "currentRuntime" logger tilstandsendringene hos taskene:
+"idle -> running -> prrempted -> finished". "Preempted" vil si at tasken ikke ble ferdig innen den gitte tidsintervallet, resten sier seg selv.
+
+Selve main filen starter globalTimer og leser oppgaver fra tasks.txt
+
+SCHEDULER
+Scheduler.c endrer selve tilstanden hos taskene via mutex. 
+
+Den har en "wait_for_rescheduling" som bruker ulike metoder for schedulere f.eks RR. Denne venter til oppgaven enten er ferdig, eller at et gitt
+tidsintervall har gått "quantum".
+
+Etter å ha brukt RR:
+
+Using Round Robin scheduler
+Summary of task scheduling 
+Task with ID 0 arrived at time 0, started at time 0 and worked for 150 out of 150 time units 
+Task with ID 1 arrived at time 15, started at time 20 and worked for 60 out of 60 time units 
+Task with ID 2 arrived at time 35, started at time 50 and worked for 40 out of 40 time units 
+Task with ID 3 arrived at time 55, started at time 60 and worked for 50 out of 50 time units 
+Task with ID 4 arrived at time 75, started at time 110 and worked for 20 out of 20 time units 
+

@@ -1,0 +1,12 @@
+FCFS
+
+pthread_mutex_lock(&timeMutex);
+        while (tasks[taskIndex]->state != finished)
+        {
+            pthread_cond_wait(&timeCond, &timeMutex);
+        }
+        pthread_mutex_unlock(&timeMutex);
+
+Denne koden sørger for at en oppgave kjører alene hele tiden. Hos FCFS ser man at dette sikres så langt tasken ikke er feridg, altså at den kjøres helt
+til den er ferdig før en annen task kan kjøres. 
+Cond wait setter CPU'en i vent slik at den ikke sløses.
