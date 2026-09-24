@@ -1,0 +1,14 @@
+Task G:
+Når vi kompilerer med -fsanitize=thread rapporterer Thread Sanitizer 5 data races.
+
+Den første er på den globale pekeren g_singleton. Én tråd skriver til den (g_singleton = malloc(...)) inne i semaforen, 
+mens en annen tråd leser den samtidig i den ytre if (!g_singleton), som ligger utenfor semaforen. Lesingen er altså ikke synkronisert.
+
+De fire andre er på medlemsvariablene a, b, c og d i singleton-objektet (heap-blokken på 32 byte som ble laget med malloc). 
+Andre tråder leser feltene i printf mens tråden som initialiserer fortsatt skriver til dem. 
+Derfor får noen tråder halvferdige verdier som {1 0 0 0} og {1 22 0 0}.
+
+Dette viser at double-checked locking ikke er trådsikkert: den første sjekken leser en delt variabel uten synkronisering, 
+og da kan andre tråder se pekeren før objektet er ferdig initialisert. I tillegg kan kompilatoren og CPU-en endre rekkefølgen på skrivingene, 
+så det hjelper ikke bare å sette pekeren til slutt. Løsningen er å initialisere singletonen i starten av programmet før trådene lages, 
+eller å alltid ta låsen.

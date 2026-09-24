@@ -1,0 +1,33 @@
+Kjører thread sanitizer og får feilmelding:
+
+Thread 1: local = 1000000, global = 1000000
+==================
+WARNING: ThreadSanitizer: data race (pid=1148)
+  Write of size 8 at 0x0055857434e0 by thread T1:
+    #0 fn /home/student/group19/Lab4/main.c:21:18 (main+0xfafa0) (BuildId: 416e572b8b950474d9e96e7677a21d737488a1e2)
+
+  Previous write of size 8 at 0x0055857434e0 by thread T2:
+    #0 fn /home/student/group19/Lab4/main.c:21:18 (main+0xfafa0) (BuildId: 416e572b8b950474d9e96e7677a21d737488a1e2)
+
+  Location is global 'g_counter' of size 8 at 0x0055857434e0 (main+0x15834e0)
+
+  Thread T1 (tid=1150, running) created by main thread at:
+    #0 pthread_create <null> (main+0x6b410) (BuildId: 416e572b8b950474d9e96e7677a21d737488a1e2)
+    #1 main /home/student/group19/Lab4/main.c:37:9 (main+0xfb088) (BuildId: 416e572b8b950474d9e96e7677a21d737488a1e2)
+
+  Thread T2 (tid=1151, running) created by main thread at:
+    #0 pthread_create <null> (main+0x6b410) (BuildId: 416e572b8b950474d9e96e7677a21d737488a1e2)
+    #1 main /home/student/group19/Lab4/main.c:37:9 (main+0xfb088) (BuildId: 416e572b8b950474d9e96e7677a21d737488a1e2)
+
+SUMMARY: ThreadSanitizer: data race /home/student/group19/Lab4/main.c:21:18 in fn
+==================
+Thread 0: local = 1000000, global = 1000999
+Final global = 1000999 (expected 2000000)
+ThreadSanitizer: reported 1 warnings
+
+Problemet er "data race". Dette vil si at g_counter++ i linje 21 i main (main.c:21) leser, endrer og skriver begge tråder til den samme variabelen 
+samtidig uten synkronisering.
+Når dette skjer kan den ene tråden overskrive oppdateringen til den andre, som gjør at noen av inkrementeringene går tapt.
+
+
+

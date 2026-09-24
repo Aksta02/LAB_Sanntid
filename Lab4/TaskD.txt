@@ -1,0 +1,11 @@
+Slik det går (før test):
+
+M og H har usleep med henholdsvis 100 og 200 ms, hvor L ikke har noe usleep. dette tillater L å kjøre i 100 ms før M tar over (høyere prioritet). 
+
+M - har ingen semaphore, så denne er uavhengig og vil kjøre seg ut
+  - den kjører med 5 * 100 ms busy wait helt ut.
+
+L - "print_pri(&threadL, "L2: low priority thread has lock\n");" vil si at L har låsen, hvor H venter på låsen "print_pri(&threadH, "H3: high priority thread waits lock\n");"
+
+L får lock før H grunnet H fortsatt er i uslepp da den deles ut til L
+

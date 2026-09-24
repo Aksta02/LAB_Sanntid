@@ -1,0 +1,24 @@
+To threads samtidig:
+
+(1)
+Thread 0: local = 1000000, global = 996874
+Thread 1: local = 1000000, global = 1000108
+Final global = 1000108 (expected 2000000)
+
+Her ser vi at begge lokale tellingene havner på 1 000 000 men de globale tellingene varierer. Dette er grunnet til at tråd 1 mest sannsynlig har skrevet
+over tellingen hos tråd 0.
+
+Den finale globale tellingen er også ikke i nærheten av hva som er forventet, faktisk ca. halvparten. Dette er grunnet at når begge tråder kjører
+samtidig kan man ende opp med at g_counter++ leser et tall, legger til et tall og skriver tilbake samtidig på begge to (overlapper). Dette gjør at selv om begge
+får en increment i tall, oppdateres den finale globale tellingene 1 gang. Om begge trådene skulle ha perfekt telt samtidig, ville vi endt opp med 
+1 000 000 tellinger hos final global telling.
+
+(2)
+Thread 0: local = 1000000, global = 1000049
+Thread 1: local = 1000000, global = 1000618
+Final global = 1000618 (expected 2000000)
+
+(3)
+Thread 0: local = 1000000, global = 1002368
+Thread 1: local = 1000000, global = 1006713
+Final global = 1006713 (expected 2000000)

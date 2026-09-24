@@ -1,0 +1,9 @@
+Task F:
+Når vi kjører programmet får alle trådene samme adresse, så det blir bare laget én singleton. 
+Men mange av trådene får singletonen før den er ferdig initialisert. De første trådene får {0 0 0 0}, så kommer noen med {1 0 0 0} og {1 22 0 0}, 
+og bare de siste får de riktige verdiene {1 22 333 4444}.
+
+Feilen er at g_singleton blir satt med malloc før medlemsvariablene har fått verdiene sine. 
+Den første sjekken if (!g_singleton) ligger utenfor semaforen, 
+så når en annen tråd kaller getSingleton mens den første tråden fortsatt holder på med initialiseringen, 
+ser den at pekeren ikke er NULL. Da hopper den rett over semaforen og returnerer en singleton som bare er halvferdig.

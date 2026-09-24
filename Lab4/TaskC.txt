@@ -1,0 +1,45 @@
+Etter å ha lagt inn semaphore ender vi opp med at den globale finale inkrementeringen ender opp på forventet verdi:
+Thread 1: local = 1000000, global = 1993693
+Thread 0: local = 1000000, global = 2000000
+Final global = 2000000 (expected 2000000)
+
+
+Sammenligner før og etter synkronisering:
+
+Med synkronisering
+Thread 1: local = 1000000, global = 1825630
+Thread 0: local = 1000000, global = 2000000
+Final global = 2000000 (expected 2000000)
+
+real	0m3.266s
+user	0m2.274s
+sys	    0m2.885s
+
+
+Uten synkronisering
+Thread 1: local = 1000000, global = 1000029
+Thread 0: local = 1000000, global = 1000120
+Final global = 1000120 (expected 2000000)
+
+real	0m0.007s
+user	0m0.012s
+sys	    0m0.001s
+
+
+Grunnen til at real time er mindre enn summen av sytem time og user time er fordi begge kjører samtiig. dette betyr at om begge starter på real time = 0,
+vil de begge kjøre samtidig og real time vil avslutte når både cpu kernel og user funkjsoner osv er ferdig.
+
+Tiden blir mye høyere med semafor fordi trådene plutselig må vente på tur i stedet for å kjøre helt igjennom med én gang. 
+Uten semafor kan hver tråd bare inkrementere til 1 000 000 med én gang, noe som bare tar noen millisekunder, 
+mens med semafor blir det pauser mens den andre tråden jobber.
+
+Uten semafor er user time størst, siden CPU-en bruker tiden på selve inkrementeringen, mens systemet bare står for oppstart, 
+opprettelse av tråder og utskrift.
+
+Med semafor blir system time mye større fordi hver gang en tråd må vente på semaforen, må kjernen legge tråden til å sove, 
+og når semaforen slippes, må kjernen vekke den igjen. Dette skjer gjennom systemkall, og siden trådene kolliderer millioner av ganger, 
+blir det mye arbeid i kjernen.
+
+Real time blir mindre enn summen av user og system time fordi de to trådene kjører samtidig på hver sin kjerne. 
+User og system time summerer CPU-tiden fra alle kjernene, 
+mens real time bare måler hvor lang tid som går på klokka fra programmet starter til det er ferdig.
