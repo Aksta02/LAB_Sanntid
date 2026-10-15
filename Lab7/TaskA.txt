@@ -1,0 +1,23 @@
+Siden RPI har 4 cores, kjører hver thread på hver sin core noes om gjør at response tiden deres blir lik execution time
+
+
+Task B
+Åpenbart A med 4 kjerne. Max tida gjekk frå 10 til 8000. Måtte bruke 65ms for å kunne fulføre sidan noken prosesar paserte 8ms timeout
+
+Task C 
+Men standard timeput på 8ms klarer ikkje systemet køyre med 10 ekstra threads, 
+men dersom vi brukar timeout på 65ms får vi resultat. Men max respons tid er rundt 50ms
+ Vi fekk timeout på 8ms utan threads so ekstra threads vil gjere dette meir sansynleg. Vi testa ikkje
+
+ Task D
+ Busy-wait uten forstyrrelse (B) hadde et snitt på 2,6 ms og maks 8,0 ms, 
+ mens busy-wait med forstyrrelse (C) hadde 15 ms og 52 ms. 
+ Periodisk polling uten forstyrrelse hadde et snitt på 1,0 ms og maks 2,0 ms, og med forstyrrelse 1,3 ms og 5,9 ms.
+
+Periodisk polling var raskest både i snitt (1,0 ms mot 2,6 ms) 
+og worst-case (2,0 ms mot 8,0 ms), selv om busy-wait oftere svarte umiddelbart,
+De tre busy-wait-trådene stjeler CPU-tid fra hverandre på samme kjerne, 
+mens de periodiske sover mellom hver sjekk og slipper raskt til når de våkner.
+
+Den periodiske påvirkes minst: snittet økte bare fra 1,0 til 1,3 ms og worst-case fra 2,0 til 5,9 ms, 
+mens busy-wait økte fra 2,6 til 15 ms i snitt og fra 8 til 52 ms i worst-case.
